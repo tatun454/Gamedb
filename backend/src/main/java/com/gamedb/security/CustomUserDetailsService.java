@@ -1,6 +1,6 @@
 package com.gamedb.security;
 
-import com.gamedb.model.User;
+import com.gamedb.Entity.User;
 import com.gamedb.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
