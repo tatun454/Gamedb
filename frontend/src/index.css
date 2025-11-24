@@ -4,7 +4,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
+  background-color: #181818;
+  color: #a259ec;
 }
 
 * {
@@ -18,8 +19,8 @@ body {
 }
 
 .nav {
-  background: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #23272a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   padding: 1rem 0;
 }
 
@@ -37,12 +38,13 @@ body {
 
 .nav-links a {
   text-decoration: none;
-  color: #333;
+  color: #eaeaea;
   font-weight: 500;
+  transition: color 0.2s;
 }
 
 .nav-links a:hover {
-  color: #007bff;
+  color: #a259ec;
 }
 
 .btn {
@@ -53,20 +55,29 @@ body {
   text-decoration: none;
   display: inline-block;
   font-weight: 500;
+  background: #23272a;
+  color: #eaeaea;
+  transition: background 0.2s, color 0.2s;
 }
 
 .btn-primary {
-  background: #007bff;
-  color: white;
+  background: #a259ec;
+  color: #fff;
 }
 
 .btn-primary:hover {
-  background: #0056b3;
+  background: #e94560;
+  color: #fff;
 }
 
 .btn-secondary {
-  background: #6c757d;
-  color: white;
+  background: #444950;
+  color: #eaeaea;
+}
+
+.btn-secondary:hover {
+  background: #23272a;
+  color: #e94560;
 }
 
 .form-group {
@@ -82,14 +93,16 @@ body {
 .form-group input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid #444950;
   border-radius: 4px;
+  background: #23272a;
+  color: #eaeaea;
 }
 
 .card {
-  background: white;
+  background: #23272a;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   padding: 1rem;
   margin-bottom: 1rem;
 }
@@ -111,8 +124,14 @@ body {
 .nav-logo {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #007bff;
+  color: #a259ec;
   text-decoration: none;
+  transition: border 0.1s;
+}
+
+.nav-logo:hover {
+  border: 2px solid #e94560;
+  border-radius: 6px;
 }
 
 .game-tags {
@@ -123,12 +142,13 @@ body {
 }
 
 .tag-badge {
-  background: #e9ecef;
+  background: #444950;
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
   font-size: 0.8rem;
   display: inline-block;
   margin: 0.25rem;
+  color: #eaeaea;
 }
 
 .btn-full-width {
@@ -154,7 +174,7 @@ body {
 }
 
 .error-message {
-  color: red;
+  color: #e94560;
   margin-bottom: 1rem;
 }
 
@@ -167,15 +187,19 @@ body {
 .form-group textarea {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid #444950;
   border-radius: 4px;
+  background: #23272a;
+  color: #eaeaea;
 }
 
 .form-group select {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid #444950;
   border-radius: 4px;
+  background: #23272a;
+  color: #eaeaea;
 }
 
 .card-spaced {
@@ -185,4 +209,15 @@ body {
 .games-list {
   display: grid;
   gap: 1rem;
+}
+
+.auth-link {
+  color: #a259ec;
+  text-decoration: none;
+  transition: color 0.2s, text-decoration 0.2s;
+}
+
+.auth-link:hover {
+  color: #c90b0b;
+  text-decoration: underline;
 }
