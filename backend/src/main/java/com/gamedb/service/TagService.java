@@ -1,6 +1,6 @@
 package com.gamedb.service;
 
-import com.gamedb.model.Tag;
+import com.gamedb.Entity.Tag;
 import com.gamedb.repository.TagRepository;
 import org.springframework.stereotype.Service;
 
