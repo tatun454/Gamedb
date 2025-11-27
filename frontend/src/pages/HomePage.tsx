@@ -45,6 +45,12 @@ const HomePage: React.FC = () => {
     }
   };
 
+  const updateGame = (updatedGame: Game) => {
+    setGames((prevGames) =>
+      prevGames.map((game) => (game.id === updatedGame.id ? updatedGame : game))
+    );
+  };
+
   if (loading) {
     return <div className="container">Loading...</div>;
   }
@@ -76,6 +82,7 @@ const HomePage: React.FC = () => {
               game={game}
               onToggleFavorite={user ? toggleFavorite : undefined}
               showFavoriteButton={user}
+              onGameUpdate={updateGame}
             />
           ))}
         </div>

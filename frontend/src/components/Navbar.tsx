@@ -5,6 +5,8 @@ import { useAuth } from "../context/AuthContext";
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
 
+  console.log("User role:", user?.role);
+
   return (
     <nav className="nav">
       <div className="container">
@@ -18,7 +20,9 @@ const Navbar: React.FC = () => {
             {user ? (
               <>
                 <Link to="/favorites">My Favorites</Link>
-                {user.role === "ADMIN" && <Link to="/admin">Admin</Link>}
+                {user?.role?.toUpperCase() === "ADMIN" && (
+                  <Link to="/admin">Admin</Link>
+                )}
                 <span>Hello, {user.username}</span>
                 <button className="btn btn-secondary" onClick={logout}>
                   Logout

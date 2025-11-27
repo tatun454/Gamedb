@@ -33,10 +33,10 @@ public class AuthService {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.USER);
+        user.setRole(Role.USER); 
         userRepository.save(user);
         String token = jwtUtil.generateToken(user.getUsername());
-        return new AuthResponse(token);
+        return new AuthResponse(token, user.getRole().toString());
     }
 
     public AuthResponse login(AuthRequest request) {
@@ -45,7 +45,13 @@ public class AuthService {
         } catch (BadCredentialsException ex) {
             throw new BadCredentialsException("Invalid credentials");
         }
+        User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
+        if (user.getRole() == null) {
+            user.setRole(Role.USER);
+            userRepository.save(user);
+        }
         String token = jwtUtil.generateToken(request.getUsername());
-        return new AuthResponse(token);
+        System.out.println("Login - User role: " + user.getRole().toString());
+        return new AuthResponse(token, user.getRole().toString());
     }
 }

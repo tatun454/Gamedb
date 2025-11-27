@@ -1,19 +1,29 @@
 package com.gamedb.controller;
 
 import com.gamedb.Entity.Game;
+import com.gamedb.Entity.Tag;
+
 import com.gamedb.service.GameService;
+import com.gamedb.service.TagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/games")
 public class GameController {
     private final GameService gameService;
+    private final TagService tagService;
 
-    public GameController(GameService gameService) {
+    public GameController(GameService gameService, TagService tagService) {
         this.gameService = gameService;
+        this.tagService = tagService;
     }
 
     @GetMapping
@@ -34,5 +44,23 @@ public class GameController {
         return gameService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/tags")
+    @PreAuthorize("isAuthenticated()")
+    public List<Tag> getAllTags() {
+        return tagService.findAll();
+    }
+
+    @PostMapping("/{gameId}/tags/{tagId}")
+    @PreAuthorize("isAuthenticated()")
+    public Game addTagToGame(@PathVariable Long gameId, @PathVariable Long tagId) {
+        return gameService.addTag(gameId, tagId);
+    }
+
+    @DeleteMapping("/{gameId}/tags/{tagId}")
+    @PreAuthorize("isAuthenticated()")
+    public Game removeTagFromGame(@PathVariable Long gameId, @PathVariable Long tagId) {
+        return gameService.removeTag(gameId, tagId);
     }
 }

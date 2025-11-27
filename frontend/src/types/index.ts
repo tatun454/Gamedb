@@ -1,7 +1,7 @@
 export interface User {
   id: number;
   username: string;
-  role: "USER" | "ADMIN";
+  role: string;
 }
 
 export interface Game {
@@ -10,6 +10,8 @@ export interface Game {
   description: string;
   releaseDate: string;
   price?: number;
+  imageUrl?: string;
+  videoUrl?: string;
   tags: Tag[];
 }
 
@@ -25,4 +27,5 @@ export interface AuthRequest {
 
 export interface AuthResponse {
   token: string;
+  role: string;
 }

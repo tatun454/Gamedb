@@ -30,6 +30,10 @@ public class Game {
 
     private BigDecimal price;
 
+    private String imageUrl;
+
+    private String videoUrl;
+
     @ManyToMany
     @JoinTable(name = "game_tags",
             joinColumns = @JoinColumn(name = "game_id"),

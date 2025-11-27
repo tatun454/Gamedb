@@ -134,6 +134,21 @@ body {
   border-radius: 6px;
 }
 
+.game-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.game-video {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
 .game-tags {
   display: flex;
   gap: 0.5rem;
@@ -220,4 +235,66 @@ body {
 .auth-link:hover {
   color: #c90b0b;
   text-decoration: underline;
+}
+
+.tag-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.btn-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.btn-danger {
+  background: #e94560;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #c90b0b;
+  color: #fff;
+}
+
+.tags-scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #444950;
+  border-radius: 4px;
+  padding: 0.5rem;
+  background: #23272a;
+}
+
+.tag-remove-btn {
+  background: none;
+  border: none;
+  color: #e94560;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.tag-remove-btn:hover {
+  color: #c90b0b;
+}
+
+.add-tag-section {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.tag-select {
+  flex: 1;
+  padding: 0.25rem;
+  border: 1px solid #444950;
+  border-radius: 4px;
+  background: #23272a;
+  color: #eaeaea;
+  font-size: 0.8rem;
 }

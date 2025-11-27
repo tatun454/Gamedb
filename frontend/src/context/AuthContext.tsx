@@ -37,18 +37,43 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      setUser({ id: 1, username: "user", role: "USER" });
+      api
+        .get("/auth/me")
+        .then((response) => {
+          const userData = response.data;
+          setUser({
+            id: userData.id,
+            username: userData.username,
+            role: userData.role,
+          });
+        })
+        .catch(() => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("username");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (credentials: AuthRequest) => {
     try {
       const response = await api.post<AuthResponse>("/auth/login", credentials);
-      const { token } = response.data;
+      console.log("Auth response:", response.data);
+      const { token, role } = response.data;
       localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+      localStorage.setItem("username", credentials.username);
 
-      setUser({ id: 1, username: credentials.username, role: "USER" });
+      setUser({
+        id: 1,
+        username: credentials.username,
+        role: role as "USER" | "ADMIN",
+      });
     } catch (error) {
       throw error;
     }
@@ -62,7 +87,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       );
       const { token } = response.data;
       localStorage.setItem("token", token);
-      setUser({ id: 1, username: credentials.username, role: "USER" });
+
+      // Fetch user data
+      const userResponse = await api.get("/auth/me");
+      const userData = userResponse.data;
+      setUser({
+        id: userData.id,
+        username: userData.username,
+        role: userData.role,
+      });
+      localStorage.setItem("role", userData.role);
+      localStorage.setItem("username", userData.username);
     } catch (error) {
       throw error;
     }
@@ -70,6 +105,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("username");
     setUser(null);
   };
 

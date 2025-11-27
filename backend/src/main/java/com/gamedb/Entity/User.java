@@ -1,5 +1,6 @@
 package com.gamedb.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,8 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    private String password; 
+    @JsonIgnore
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
