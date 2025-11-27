@@ -298,3 +298,111 @@ body {
   color: #eaeaea;
   font-size: 0.8rem;
 }
+
+.tag-suggestions {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #444950;
+  border-radius: 4px;
+  background: #23272a;
+  margin-top: 0.5rem;
+}
+
+.tag-suggestion-btn {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  color: #eaeaea;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tag-suggestion-btn:hover {
+  background: #444950;
+}
+
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.games-list-compact {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.game-card-compact {
+  background: #23272a;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.game-image-compact {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.game-info-compact {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-title-compact {
+  font-size: 0.9rem;
+  margin: 0 0 0.25rem 0;
+  color: #eaeaea;
+}
+
+.game-price-compact {
+  font-size: 0.8rem;
+  margin: 0 0 0.25rem 0;
+  color: #a259ec;
+  font-weight: 500;
+}
+
+.game-release-compact {
+  font-size: 0.7rem;
+  margin: 0 0 0.5rem 0;
+  color: #888;
+}
+
+.game-tags-compact {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.tag-badge-compact {
+  background: #444950;
+  padding: 0.15rem 0.3rem;
+  border-radius: 8px;
+  font-size: 0.6rem;
+  color: #eaeaea;
+}
+
+.tag-more {
+  font-size: 0.6rem;
+  color: #888;
+  align-self: center;
+}
+
+.btn-small-compact {
+  padding: 0.2rem 0.4rem;
+  font-size: 0.7rem;
+  align-self: flex-start;
+}

@@ -8,6 +8,7 @@ import RegisterPage from "./pages/RegisterPage";
 import SearchPage from "./pages/SearchPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import GameDetailPage from "./pages/GameDetailPage";
 
 const App: React.FC = () => {
   const { user, loading } = useAuth();
@@ -22,6 +23,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/game/:id" element={<GameDetailPage />} />
         <Route
           path="/login"
           element={user ? <Navigate to="/" replace /> : <LoginPage />}

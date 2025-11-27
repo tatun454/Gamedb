@@ -34,6 +34,8 @@ public class Game {
 
     private String videoUrl;
 
+    private String steamLink;
+
     @ManyToMany
     @JoinTable(name = "game_tags",
             joinColumns = @JoinColumn(name = "game_id"),

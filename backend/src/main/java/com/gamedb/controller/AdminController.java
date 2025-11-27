@@ -43,6 +43,12 @@ public class AdminController {
                     existingGame.setPrice(game.getPrice());
                     existingGame.setImageUrl(game.getImageUrl());
                     existingGame.setVideoUrl(game.getVideoUrl());
+                    existingGame.setSteamLink(game.getSteamLink());
+                    existingGame.getTags().clear();
+                    for (Tag tag : game.getTags()) {
+                        Tag managedTag = tagService.findById(tag.getId()).orElseThrow(() -> new RuntimeException("Tag not found"));
+                        existingGame.getTags().add(managedTag);
+                    }
                     return ResponseEntity.ok(gameService.save(existingGame));
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -77,6 +83,12 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public Game removeTagFromGame(@PathVariable Long gameId, @PathVariable Long tagId) {
         return gameService.removeTag(gameId, tagId);
+    }
+
+    @GetMapping("/tags/search")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Tag> searchTags(@RequestParam String prefix) {
+        return tagService.findByNameStartingWith(prefix);
     }
 
     @PutMapping("/users/{username}/role")

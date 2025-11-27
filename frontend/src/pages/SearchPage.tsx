@@ -10,6 +10,8 @@ const SearchPage: React.FC = () => {
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(false);
   const [user] = useState(localStorage.getItem("token") !== null);
+  const [tagInput, setTagInput] = useState("");
+  const [tagSuggestions, setTagSuggestions] = useState<Tag[]>([]);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -49,6 +51,25 @@ const SearchPage: React.FC = () => {
     }
   };
 
+  const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTagInput(value);
+    if (value) {
+      const filtered = tags.filter((tag) =>
+        tag.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setTagSuggestions(filtered);
+    } else {
+      setTagSuggestions([]);
+    }
+  };
+
+  const selectTag = (tag: Tag) => {
+    setSelectedTagId(tag.id);
+    setTagInput(tag.name);
+    setTagSuggestions([]);
+  };
+
   return (
     <div className="container section-spacing">
       <h1>Search Games</h1>
@@ -66,23 +87,28 @@ const SearchPage: React.FC = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="tagSelect">Filter by Tag</label>
-          <select
-            id="tagSelect"
-            value={selectedTagId || ""}
-            onChange={(e) =>
-              setSelectedTagId(
-                e.target.value ? Number(e.target.value) : undefined
-              )
-            }
-          >
-            <option value="">All Tags</option>
-            {tags.map((tag) => (
-              <option key={tag.id} value={tag.id}>
-                {tag.name}
-              </option>
-            ))}
-          </select>
+          <label htmlFor="tagInput">Filter by Tag</label>
+          <input
+            type="text"
+            id="tagInput"
+            value={tagInput}
+            onChange={handleTagInputChange}
+            placeholder="Type to search tags..."
+          />
+          {tagSuggestions.length > 0 && (
+            <div className="tag-suggestions">
+              {tagSuggestions.map((tag) => (
+                <button
+                  key={tag.id}
+                  type="button"
+                  className="tag-suggestion-btn"
+                  onClick={() => selectTag(tag)}
+                >
+                  {tag.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <button className="btn btn-primary" onClick={search} disabled={loading}>

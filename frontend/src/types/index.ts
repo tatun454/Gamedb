@@ -12,6 +12,7 @@ export interface Game {
   price?: number;
   imageUrl?: string;
   videoUrl?: string;
+  steamLink?: string;
   tags: Tag[];
 }
 

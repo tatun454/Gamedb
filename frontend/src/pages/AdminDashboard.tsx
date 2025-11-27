@@ -12,6 +12,8 @@ const AdminDashboard: React.FC = () => {
     price: "",
     imageUrl: "",
     videoUrl: "",
+    steamLink: "",
+    tags: [] as Tag[],
   });
   const [newTagName, setNewTagName] = useState("");
   const [editingGame, setEditingGame] = useState<Game | null>(null);
@@ -22,8 +24,14 @@ const AdminDashboard: React.FC = () => {
     price: "",
     imageUrl: "",
     videoUrl: "",
+    steamLink: "",
   });
+  const [editTagInput, setEditTagInput] = useState("");
+  const [editTagSuggestions, setEditTagSuggestions] = useState<Tag[]>([]);
+  const [editGameTags, setEditGameTags] = useState<Tag[]>([]);
   const [selectedTagId, setSelectedTagId] = useState<number | "">("");
+  const [tagInput, setTagInput] = useState("");
+  const [tagSuggestions, setTagSuggestions] = useState<Tag[]>([]);
 
   useEffect(() => {
     fetchData();
@@ -56,6 +64,8 @@ const AdminDashboard: React.FC = () => {
         price: "",
         imageUrl: "",
         videoUrl: "",
+        steamLink: "",
+        tags: [],
       });
       fetchData();
     } catch (error) {}
@@ -88,7 +98,9 @@ const AdminDashboard: React.FC = () => {
       price: game.price?.toString() || "",
       imageUrl: game.imageUrl || "",
       videoUrl: game.videoUrl || "",
+      steamLink: game.steamLink || "",
     });
+    setEditGameTags(game.tags || []);
   };
 
   const updateGame = async (e: React.FormEvent) => {
@@ -99,8 +111,14 @@ const AdminDashboard: React.FC = () => {
         ...editGame,
         price: editGame.price ? parseFloat(editGame.price) : null,
         releaseDate: editGame.releaseDate || null,
+        tags: editGameTags,
       };
-      await api.put(`/admin/games/${editingGame.id}`, gameData);
+      console.log("Sending update data:", gameData);
+      const response = await api.put(
+        `/admin/games/${editingGame.id}`,
+        gameData
+      );
+      console.log("Update response:", response.data);
       setEditingGame(null);
       setEditGame({
         title: "",
@@ -109,9 +127,13 @@ const AdminDashboard: React.FC = () => {
         price: "",
         imageUrl: "",
         videoUrl: "",
+        steamLink: "",
       });
+      setEditGameTags([]);
       fetchData();
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error updating game:", error);
+    }
   };
 
   const cancelEdit = () => {
@@ -123,7 +145,11 @@ const AdminDashboard: React.FC = () => {
       price: "",
       imageUrl: "",
       videoUrl: "",
+      steamLink: "",
     });
+    setEditGameTags([]);
+    setEditTagInput("");
+    setEditTagSuggestions([]);
   };
 
   const addTagToGame = async (gameId: number) => {
@@ -144,6 +170,67 @@ const AdminDashboard: React.FC = () => {
     } catch (error) {
       console.error("Error removing tag:", error);
     }
+  };
+
+  const handleTagInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value;
+    setTagInput(value);
+    if (value.length > 0) {
+      try {
+        const response = await api.get(`/admin/tags/search?prefix=${value}`);
+        setTagSuggestions(response.data);
+      } catch (error) {
+        console.error("Error fetching tag suggestions:", error);
+      }
+    } else {
+      setTagSuggestions([]);
+    }
+  };
+
+  const addTagToNewGame = (tag: Tag) => {
+    if (!newGame.tags.some((t) => t.id === tag.id)) {
+      setNewGame({ ...newGame, tags: [...newGame.tags, tag] });
+    }
+    setTagInput("");
+    setTagSuggestions([]);
+  };
+
+  const removeTagFromNewGame = (tagId: number) => {
+    setNewGame({
+      ...newGame,
+      tags: newGame.tags.filter((tag) => tag.id !== tagId),
+    });
+  };
+
+  const handleEditTagInputChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value;
+    setEditTagInput(value);
+    if (value.length > 0) {
+      try {
+        const response = await api.get(`/admin/tags/search?prefix=${value}`);
+        setEditTagSuggestions(response.data);
+      } catch (error) {
+        console.error("Error fetching tag suggestions:", error);
+      }
+    } else {
+      setEditTagSuggestions([]);
+    }
+  };
+
+  const addTagToEditGame = (tag: Tag) => {
+    if (!editGameTags.some((t) => t.id === tag.id)) {
+      setEditGameTags([...editGameTags, tag]);
+    }
+    setEditTagInput("");
+    setEditTagSuggestions([]);
+  };
+
+  const removeTagFromEditGame = (tagId: number) => {
+    setEditGameTags(editGameTags.filter((tag) => tag.id !== tagId));
   };
 
   return (
@@ -217,6 +304,57 @@ const AdminDashboard: React.FC = () => {
                 }
                 placeholder="https://example.com/video.mp4"
               />
+            </div>
+            <div className="form-group">
+              <label>Steam Link</label>
+              <input
+                type="url"
+                value={newGame.steamLink}
+                onChange={(e) =>
+                  setNewGame({ ...newGame, steamLink: e.target.value })
+                }
+                placeholder="https://store.steampowered.com/app/..."
+              />
+            </div>
+            <div className="form-group">
+              <label>Tags</label>
+              <input
+                type="text"
+                value={tagInput}
+                onChange={handleTagInputChange}
+                placeholder="Type to search tags..."
+              />
+              {tagSuggestions.length > 0 && (
+                <div className="tag-suggestions">
+                  {tagSuggestions.map((tag) => (
+                    <button
+                      key={tag.id}
+                      type="button"
+                      className="tag-suggestion-btn"
+                      onClick={() => addTagToNewGame(tag)}
+                    >
+                      {tag.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {newGame.tags.length > 0 && (
+                <div className="selected-tags">
+                  {newGame.tags.map((tag) => (
+                    <span key={tag.id} className="tag-badge">
+                      {tag.name}
+                      <button
+                        type="button"
+                        className="tag-remove-btn"
+                        onClick={() => removeTagFromNewGame(tag.id)}
+                        title="Remove tag"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             <button type="submit" className="btn btn-primary">
               Create Game
@@ -292,6 +430,57 @@ const AdminDashboard: React.FC = () => {
                   placeholder="https://example.com/video.mp4"
                 />
               </div>
+              <div className="form-group">
+                <label>Steam Link</label>
+                <input
+                  type="url"
+                  value={editGame.steamLink}
+                  onChange={(e) =>
+                    setEditGame({ ...editGame, steamLink: e.target.value })
+                  }
+                  placeholder="https://store.steampowered.com/app/..."
+                />
+              </div>
+              <div className="form-group">
+                <label>Tags</label>
+                <input
+                  type="text"
+                  value={editTagInput}
+                  onChange={handleEditTagInputChange}
+                  placeholder="Type to search tags..."
+                />
+                {editTagSuggestions.length > 0 && (
+                  <div className="tag-suggestions">
+                    {editTagSuggestions.map((tag) => (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        className="tag-suggestion-btn"
+                        onClick={() => addTagToEditGame(tag)}
+                      >
+                        {tag.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {editGameTags.length > 0 && (
+                  <div className="selected-tags">
+                    {editGameTags.map((tag) => (
+                      <span key={tag.id} className="tag-badge">
+                        {tag.name}
+                        <button
+                          type="button"
+                          className="tag-remove-btn"
+                          onClick={() => removeTagFromEditGame(tag.id)}
+                          title="Remove tag"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
               <div className="form-actions">
                 <button type="submit" className="btn btn-primary">
                   Update Game
@@ -346,80 +535,43 @@ const AdminDashboard: React.FC = () => {
 
       <section className="section-spacing">
         <h2>All Games</h2>
-        <div className="games-list">
+        <div className="games-list-compact">
           {games.map((game) => (
-            <div key={game.id} className="card">
+            <div key={game.id} className="game-card-compact">
               {game.imageUrl && (
                 <img
                   src={game.imageUrl}
                   alt={game.title}
-                  style={{
-                    maxWidth: "200px",
-                    maxHeight: "150px",
-                    display: "block",
-                    margin: "0 auto",
-                  }}
+                  className="game-image-compact"
                 />
               )}
-              <h4>{game.title}</h4>
-              <p>
-                <strong>Price:</strong> {game.price ? `$${game.price}` : "Free"}
-              </p>
-              <p>
-                <strong>Release Date:</strong> {game.releaseDate || "TBD"}
-              </p>
-              {game.tags && game.tags.length > 0 && (
-                <div className="game-tags">
-                  {game.tags.map((tag) => (
-                    <span key={tag.id} className="tag-badge">
-                      {tag.name}
-                      <button
-                        className="tag-remove-btn"
-                        onClick={() => removeTagFromGame(game.id, tag.id)}
-                        title="Remove tag"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-              <div className="add-tag-section">
-                <select
-                  value={selectedTagId}
-                  onChange={(e) =>
-                    setSelectedTagId(
-                      e.target.value ? parseInt(e.target.value) : ""
-                    )
-                  }
-                  className="tag-select"
-                >
-                  <option value="">Add tag...</option>
-                  {tags
-                    .filter(
-                      (tag) =>
-                        !game.tags.some((gameTag) => gameTag.id === tag.id)
-                    )
-                    .map((tag) => (
-                      <option key={tag.id} value={tag.id}>
+              <div className="game-info-compact">
+                <h5 className="game-title-compact">{game.title}</h5>
+                <p className="game-price-compact">
+                  {game.price ? `$${game.price}` : "Free"}
+                </p>
+                <p className="game-release-compact">
+                  {game.releaseDate || "TBD"}
+                </p>
+                {game.tags && game.tags.length > 0 && (
+                  <div className="game-tags-compact">
+                    {game.tags.slice(0, 3).map((tag) => (
+                      <span key={tag.id} className="tag-badge-compact">
                         {tag.name}
-                      </option>
+                      </span>
                     ))}
-                </select>
+                    {game.tags.length > 3 && (
+                      <span className="tag-more">+{game.tags.length - 3}</span>
+                    )}
+                  </div>
+                )}
                 <button
-                  className="btn btn-primary btn-small"
-                  onClick={() => addTagToGame(game.id)}
-                  disabled={!selectedTagId}
+                  className="btn btn-secondary btn-small-compact"
+                  onClick={() => startEditGame(game)}
                 >
-                  Add
+                  Edit
                 </button>
               </div>
-              <button
-                className="btn btn-secondary btn-small"
-                onClick={() => startEditGame(game)}
-              >
-                Edit
-              </button>
             </div>
           ))}
         </div>

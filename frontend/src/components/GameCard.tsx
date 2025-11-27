@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { Game, Tag } from "../types";
+import { Game } from "../types";
 
 interface GameCardProps {
   game: Game;
   onToggleFavorite?: (gameId: number) => void;
   showFavoriteButton?: boolean;
   onGameUpdate?: (updatedGame: Game) => void;
+  showRemoveButtons?: boolean;
 }
 
 const GameCard: React.FC<GameCardProps> = ({
@@ -14,42 +16,15 @@ const GameCard: React.FC<GameCardProps> = ({
   onToggleFavorite,
   showFavoriteButton = false,
   onGameUpdate,
+  showRemoveButtons = false,
 }) => {
-  const [availableTags, setAvailableTags] = useState<Tag[]>([]);
-  const [selectedTagId, setSelectedTagId] = useState<number | "">("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsAuthenticated(!!token);
-    if (token) {
-      fetchAvailableTags();
-    }
   }, []);
-
-  const fetchAvailableTags = async () => {
-    try {
-      const response = await api.get("/games/tags");
-      setAvailableTags(response.data);
-    } catch (error) {
-      console.error("Error fetching tags:", error);
-    }
-  };
-
-  const addTag = async () => {
-    if (!selectedTagId || !isAuthenticated) return;
-    try {
-      const response = await api.post(
-        `/games/${game.id}/tags/${selectedTagId}`
-      );
-      if (onGameUpdate) {
-        onGameUpdate(response.data);
-      }
-      setSelectedTagId("");
-    } catch (error) {
-      console.error("Error adding tag:", error);
-    }
-  };
 
   const removeTag = async (tagId: number) => {
     if (!isAuthenticated) return;
@@ -63,12 +38,22 @@ const GameCard: React.FC<GameCardProps> = ({
     }
   };
 
-  const releaseYear = game.releaseDate
-    ? new Date(game.releaseDate).getFullYear()
-    : null;
+  const formatReleaseDate = (dateString: string | null) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
-    <div className="card game-card">
+    <div
+      className="card game-card"
+      onClick={() => navigate(`/game/${game.id}`)}
+      style={{ cursor: "pointer" }}
+    >
       {game.imageUrl && (
         <img
           src={game.imageUrl}
@@ -77,15 +62,21 @@ const GameCard: React.FC<GameCardProps> = ({
           crossOrigin="anonymous"
         />
       )}
-      {game.videoUrl && (
-        <video controls className="game-video" crossOrigin="anonymous">
-          <source src={game.videoUrl} />
-        </video>
-      )}
       <div className="card-content">
         <h3 className="game-title">{game.title}</h3>
-        <div className="game-meta">
-          {releaseYear && <span className="game-release">{releaseYear}</span>}
+        <div
+          className="game-meta"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {game.releaseDate && (
+            <span className="game-release">
+              {formatReleaseDate(game.releaseDate)}
+            </span>
+          )}
           <span className="game-price">
             {game.price ? `$${game.price}` : "Free"}
           </span>
@@ -95,7 +86,7 @@ const GameCard: React.FC<GameCardProps> = ({
             {game.tags.map((tag) => (
               <span key={tag.id} className="tag-badge">
                 {tag.name}
-                {isAuthenticated && (
+                {showRemoveButtons && (
                   <button
                     className="tag-remove-btn"
                     onClick={() => removeTag(tag.id)}
@@ -108,34 +99,16 @@ const GameCard: React.FC<GameCardProps> = ({
             ))}
           </div>
         )}
-        {isAuthenticated && (
-          <div className="add-tag-section">
-            <select
-              value={selectedTagId}
-              onChange={(e) =>
-                setSelectedTagId(e.target.value ? parseInt(e.target.value) : "")
-              }
-              className="tag-select"
-            >
-              <option value="">Add tag...</option>
-              {availableTags
-                .filter(
-                  (tag) => !game.tags.some((gameTag) => gameTag.id === tag.id)
-                )
-                .map((tag) => (
-                  <option key={tag.id} value={tag.id}>
-                    {tag.name}
-                  </option>
-                ))}
-            </select>
-            <button
-              className="btn btn-primary btn-small"
-              onClick={addTag}
-              disabled={!selectedTagId}
-            >
-              Add
-            </button>
-          </div>
+
+        {game.steamLink && (
+          <a
+            href={game.steamLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary btn-small steam-link-btn"
+          >
+            View on Steam
+          </a>
         )}
         {showFavoriteButton && onToggleFavorite && (
           <button

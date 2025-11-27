@@ -27,6 +27,10 @@ public class TagService {
         return tagRepository.findAll();
     }
 
+    public List<Tag> findByNameStartingWith(String prefix) {
+        return tagRepository.findByNameStartingWith(prefix);
+    }
+
     public void deleteById(Long id) {
         tagRepository.deleteById(id);
     }

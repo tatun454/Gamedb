@@ -1,0 +1,55 @@
+.game-detail-carousel {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-detail-carousel .slick-slider {
+  width: 100%;
+  max-width: 800px;
+}
+
+.game-detail-carousel .slick-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.game-detail-carousel .slick-slide > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.game-detail-image {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+  align-content: center;
+}
+
+.game-video-detail {
+  width: 100%;
+  max-width: 700px;
+  height: 400px;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+  background-color: #000;
+}
+
+.game-video-detail::-webkit-media-controls-panel {
+  background-color: rgba(35, 39, 42, 0.8);
+}
+
+.game-video-detail::-webkit-media-controls {
+  background-color: rgba(35, 39, 42, 0.8);
+}

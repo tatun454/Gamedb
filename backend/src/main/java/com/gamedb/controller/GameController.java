@@ -52,6 +52,11 @@ public class GameController {
         return tagService.findAll();
     }
 
+    @GetMapping("/tags/search")
+    public List<Tag> searchTags(@RequestParam String prefix) {
+        return tagService.findByNameStartingWith(prefix);
+    }
+
     @PostMapping("/{gameId}/tags/{tagId}")
     @PreAuthorize("isAuthenticated()")
     public Game addTagToGame(@PathVariable Long gameId, @PathVariable Long tagId) {

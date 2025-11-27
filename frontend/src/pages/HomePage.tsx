@@ -33,6 +33,12 @@ const HomePage: React.FC = () => {
     };
 
     fetchGames();
+
+    const handleFocus = () => {
+      fetchGames();
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
   }, [user]);
 
   const toggleFavorite = async (gameId: number) => {
@@ -83,6 +89,7 @@ const HomePage: React.FC = () => {
               onToggleFavorite={user ? toggleFavorite : undefined}
               showFavoriteButton={user}
               onGameUpdate={updateGame}
+              showRemoveButtons={false}
             />
           ))}
         </div>
