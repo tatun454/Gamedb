@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
 import api from "../services/api";
 import { Game } from "../types";
 
@@ -19,12 +20,32 @@ const GameCard: React.FC<GameCardProps> = ({
   showRemoveButtons = false,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsAuthenticated(!!token);
   }, []);
+
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      if (!isAuthenticated) return;
+
+      try {
+        const response = await api.get("/user/favorites/games");
+        const favoriteGames = response.data;
+        const isFav = favoriteGames.some(
+          (favGame: Game) => favGame.id === game.id
+        );
+        setIsFavorite(isFav);
+      } catch (error) {
+        console.error("Error checking favorite status:", error);
+      }
+    };
+
+    checkFavoriteStatus();
+  }, [isAuthenticated, game.id]);
 
   const removeTag = async (tagId: number) => {
     if (!isAuthenticated) return;
@@ -48,11 +69,26 @@ const GameCard: React.FC<GameCardProps> = ({
     });
   };
 
+  const toggleFavorite = async () => {
+    if (!isAuthenticated) return;
+
+    try {
+      const response = await api.post(`/user/favorites/game/${game.id}`);
+      const wasAdded = response.data.includes("added");
+      setIsFavorite(wasAdded);
+
+      if (onToggleFavorite) {
+        onToggleFavorite(game.id);
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
+  };
+
   return (
     <div
       className="card game-card"
       onClick={() => navigate(`/game/${game.id}`)}
-      style={{ cursor: "pointer" }}
     >
       {game.imageUrl && (
         <img
@@ -64,14 +100,7 @@ const GameCard: React.FC<GameCardProps> = ({
       )}
       <div className="card-content">
         <h3 className="game-title">{game.title}</h3>
-        <div
-          className="game-meta"
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <div className="game-meta">
           {game.releaseDate && (
             <span className="game-release">
               {formatReleaseDate(game.releaseDate)}
@@ -100,24 +129,37 @@ const GameCard: React.FC<GameCardProps> = ({
           </div>
         )}
 
-        {game.steamLink && (
-          <a
-            href={game.steamLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary btn-small steam-link-btn"
-          >
-            View on Steam
-          </a>
-        )}
-        {showFavoriteButton && onToggleFavorite && (
-          <button
-            className="btn btn-secondary btn-small favorite-btn"
-            onClick={() => onToggleFavorite(game.id)}
-          >
-            ❤️ Favorite
-          </button>
-        )}
+        <div
+          className="d-flex"
+          style={{ gap: "2rem", justifyContent: "space-between" }}
+        >
+          {game.steamLink && (
+            <a
+              href={game.steamLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary btn-small steam-link-btn"
+            >
+              <i className="bi bi-steam"></i>
+            </a>
+          )}
+          {showFavoriteButton && (
+            <button
+              className="btn btn-secondary btn-small favorite-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFavorite();
+              }}
+              title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+            >
+              {isFavorite ? (
+                <SuitHeartFill size={20} />
+              ) : (
+                <SuitHeart size={20} />
+              )}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

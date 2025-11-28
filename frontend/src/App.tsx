@@ -19,6 +19,27 @@ const App: React.FC = () => {
 
   return (
     <>
+      <video
+        autoPlay
+        muted
+        loop
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: -1,
+        }}
+      >
+        <source
+          src="https://cdn.pixabay.com/video/2022/06/13/120172-720504774_large.mp4"
+          //https://cdn.pixabay.com/video/2019/08/13/26007-353916139_large.mp4
+          //https://cdn.pixabay.com/video/2017/06/11/9810-221185517_large.mp4
+          type="video/mp4"
+        />
+      </video>
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />

@@ -4,7 +4,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #181818;
+  background-color: transparent;
   color: #a259ec;
 }
 
@@ -45,6 +45,10 @@ body {
 
 .nav-links a:hover {
   color: #a259ec;
+}
+
+.nav-icon {
+  font-size: 1.5em;
 }
 
 .btn {
@@ -105,6 +109,7 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   padding: 1rem;
   margin-bottom: 1rem;
+  cursor: pointer;
 }
 
 .game-grid {
@@ -149,11 +154,50 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.game-detail-carousel {
+  height: 400px;
+}
+
+.slide-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.game-detail-image {
+  height: auto;
+  max-height: 400px;
+  width: auto;
+  max-width: 100%;
+  border-radius: 4px;
+  margin: 0 auto;
+  display: block;
+}
+
+.game-video-detail {
+  width: 100%;
+  height: 400px;
+  border-radius: 4px;
+}
+
 .game-tags {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
   margin-top: 0.5rem;
+}
+
+.game-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.d-flex {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
 }
 
 .tag-badge {
@@ -405,4 +449,23 @@ body {
   padding: 0.2rem 0.4rem;
   font-size: 0.7rem;
   align-self: flex-start;
+}
+
+.back-btn {
+  margin-bottom: 1rem;
+}
+
+.game-detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }

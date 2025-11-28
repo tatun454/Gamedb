@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -20,5 +21,7 @@ public class GameDTO {
     private String imageUrl;
     private String videoUrl;
     private String steamLink;
+    private List<String> carouselImageUrls;
+    private List<String> carouselVideoUrls;
     private Set<TagDTO> tags;
 }

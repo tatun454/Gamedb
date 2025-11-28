@@ -44,6 +44,8 @@ public class AdminController {
                     existingGame.setImageUrl(game.getImageUrl());
                     existingGame.setVideoUrl(game.getVideoUrl());
                     existingGame.setSteamLink(game.getSteamLink());
+                    existingGame.setCarouselImageUrls(game.getCarouselImageUrls());
+                    existingGame.setCarouselVideoUrls(game.getCarouselVideoUrls());
                     existingGame.getTags().clear();
                     for (Tag tag : game.getTags()) {
                         Tag managedTag = tagService.findById(tag.getId()).orElseThrow(() -> new RuntimeException("Tag not found"));
@@ -100,6 +102,8 @@ public class AdminController {
                     userRepository.save(user);
                     return ResponseEntity.ok("User promoted to admin");
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.status(404).body("User not found"));
     }
+
+
 }

@@ -13,6 +13,8 @@ const AdminDashboard: React.FC = () => {
     imageUrl: "",
     videoUrl: "",
     steamLink: "",
+    carouselImageUrls: [] as string[],
+    carouselVideoUrls: [] as string[],
     tags: [] as Tag[],
   });
   const [newTagName, setNewTagName] = useState("");
@@ -25,11 +27,13 @@ const AdminDashboard: React.FC = () => {
     imageUrl: "",
     videoUrl: "",
     steamLink: "",
+    imageUrls: [] as string[],
+    videoUrls: [] as string[],
   });
   const [editTagInput, setEditTagInput] = useState("");
   const [editTagSuggestions, setEditTagSuggestions] = useState<Tag[]>([]);
   const [editGameTags, setEditGameTags] = useState<Tag[]>([]);
-  const [selectedTagId, setSelectedTagId] = useState<number | "">("");
+
   const [tagInput, setTagInput] = useState("");
   const [tagSuggestions, setTagSuggestions] = useState<Tag[]>([]);
 
@@ -65,6 +69,8 @@ const AdminDashboard: React.FC = () => {
         imageUrl: "",
         videoUrl: "",
         steamLink: "",
+        carouselImageUrls: [],
+        carouselVideoUrls: [],
         tags: [],
       });
       fetchData();
@@ -99,6 +105,8 @@ const AdminDashboard: React.FC = () => {
       imageUrl: game.imageUrl || "",
       videoUrl: game.videoUrl || "",
       steamLink: game.steamLink || "",
+      imageUrls: game.carouselImageUrls || [],
+      videoUrls: game.carouselVideoUrls || [],
     });
     setEditGameTags(game.tags || []);
   };
@@ -128,6 +136,8 @@ const AdminDashboard: React.FC = () => {
         imageUrl: "",
         videoUrl: "",
         steamLink: "",
+        imageUrls: [],
+        videoUrls: [],
       });
       setEditGameTags([]);
       fetchData();
@@ -146,30 +156,12 @@ const AdminDashboard: React.FC = () => {
       imageUrl: "",
       videoUrl: "",
       steamLink: "",
+      imageUrls: [],
+      videoUrls: [],
     });
     setEditGameTags([]);
     setEditTagInput("");
     setEditTagSuggestions([]);
-  };
-
-  const addTagToGame = async (gameId: number) => {
-    if (!selectedTagId) return;
-    try {
-      await api.post(`/admin/games/${gameId}/tags/${selectedTagId}`);
-      setSelectedTagId("");
-      fetchData();
-    } catch (error) {
-      console.error("Error adding tag:", error);
-    }
-  };
-
-  const removeTagFromGame = async (gameId: number, tagId: number) => {
-    try {
-      await api.delete(`/admin/games/${gameId}/tags/${tagId}`);
-      fetchData();
-    } catch (error) {
-      console.error("Error removing tag:", error);
-    }
   };
 
   const handleTagInputChange = async (
@@ -305,6 +297,91 @@ const AdminDashboard: React.FC = () => {
                 placeholder="https://example.com/video.mp4"
               />
             </div>
+
+            <div className="form-group">
+              <label>Additional Image URLs</label>
+              {newGame.carouselImageUrls.map((url, index) => (
+                <div key={index} className="additional-url">
+                  <input
+                    type="url"
+                    value={url}
+                    onChange={(e) => {
+                      const newUrls = [...newGame.carouselImageUrls];
+                      newUrls[index] = e.target.value;
+                      setNewGame({ ...newGame, carouselImageUrls: newUrls });
+                    }}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-small"
+                    onClick={() => {
+                      const newUrls = newGame.carouselImageUrls.filter(
+                        (_, i) => i !== index
+                      );
+                      setNewGame({ ...newGame, carouselImageUrls: newUrls });
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-secondary btn-small"
+                onClick={() =>
+                  setNewGame({
+                    ...newGame,
+                    carouselImageUrls: [...newGame.carouselImageUrls, ""],
+                  })
+                }
+              >
+                + Add Image URL
+              </button>
+            </div>
+
+            <div className="form-group">
+              <label>Additional Video URLs</label>
+              {newGame.carouselVideoUrls.map((url, index) => (
+                <div key={index} className="additional-url">
+                  <input
+                    type="url"
+                    value={url}
+                    onChange={(e) => {
+                      const newUrls = [...newGame.carouselVideoUrls];
+                      newUrls[index] = e.target.value;
+                      setNewGame({ ...newGame, carouselVideoUrls: newUrls });
+                    }}
+                    placeholder="https://example.com/video.mp4"
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-small"
+                    onClick={() => {
+                      const newUrls = newGame.carouselVideoUrls.filter(
+                        (_, i) => i !== index
+                      );
+                      setNewGame({ ...newGame, carouselVideoUrls: newUrls });
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-secondary btn-small"
+                onClick={() =>
+                  setNewGame({
+                    ...newGame,
+                    carouselVideoUrls: [...newGame.carouselVideoUrls, ""],
+                  })
+                }
+              >
+                + Add Video URL
+              </button>
+            </div>
+
             <div className="form-group">
               <label>Steam Link</label>
               <input
@@ -430,6 +507,103 @@ const AdminDashboard: React.FC = () => {
                   placeholder="https://example.com/video.mp4"
                 />
               </div>
+
+              <div className="form-group">
+                <label>Additional Image URLs</label>
+                {editGame.imageUrls.map((url, index) => (
+                  <div key={index} className="additional-url">
+                    <input
+                      type="url"
+                      value={url}
+                      onChange={(e) => {
+                        const newUrls = [...editGame.imageUrls];
+                        newUrls[index] = e.target.value;
+                        setEditGame({
+                          ...editGame,
+                          imageUrls: newUrls,
+                        });
+                      }}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-danger btn-small"
+                      onClick={() => {
+                        const newUrls = editGame.imageUrls.filter(
+                          (_, i) => i !== index
+                        );
+                        setEditGame({
+                          ...editGame,
+                          imageUrls: newUrls,
+                        });
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-small"
+                  onClick={() =>
+                    setEditGame({
+                      ...editGame,
+                      imageUrls: [...editGame.imageUrls, ""],
+                    })
+                  }
+                >
+                  + Add Image URL
+                </button>
+              </div>
+
+              <div className="form-group">
+                <label>Additional Video URLs</label>
+                {editGame.videoUrls.map((url, index) => (
+                  <div key={index} className="additional-url">
+                    <input
+                      type="url"
+                      value={url}
+                      onChange={(e) => {
+                        const newUrls = [...editGame.videoUrls];
+                        newUrls[index] = e.target.value;
+                        setEditGame({
+                          ...editGame,
+                          videoUrls: newUrls,
+                        });
+                      }}
+                      placeholder="https://example.com/video.mp4"
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-danger btn-small"
+                      onClick={() => {
+                        const newUrls = editGame.videoUrls.filter(
+                          (_, i) => i !== index
+                        );
+                        setEditGame({
+                          ...editGame,
+                          videoUrls: newUrls,
+                        });
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-small"
+                  onClick={() =>
+                    setEditGame({
+                      ...editGame,
+                      videoUrls: [...editGame.videoUrls, ""],
+                    })
+                  }
+                >
+                  + Add Video URL
+                </button>
+              </div>
+
               <div className="form-group">
                 <label>Steam Link</label>
                 <input

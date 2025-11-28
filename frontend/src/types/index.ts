@@ -13,6 +13,8 @@ export interface Game {
   imageUrl?: string;
   videoUrl?: string;
   steamLink?: string;
+  carouselImageUrls?: string[];
+  carouselVideoUrls?: string[];
   tags: Tag[];
 }
 

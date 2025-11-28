@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,6 +36,16 @@ public class Game {
     private String videoUrl;
 
     private String steamLink;
+
+    @ElementCollection
+    @CollectionTable(name = "game_carousel_images", joinColumns = @JoinColumn(name = "game_id"))
+    @Column(name = "image_url")
+    private List<String> carouselImageUrls = new java.util.ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "game_carousel_videos", joinColumns = @JoinColumn(name = "game_id"))
+    @Column(name = "video_url")
+    private List<String> carouselVideoUrls = new java.util.ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "game_tags",

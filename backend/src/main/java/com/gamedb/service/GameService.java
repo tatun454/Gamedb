@@ -20,33 +20,28 @@ public class GameService {
         this.tagRepository = tagRepository;
     }
 
-    public Game save(Game game) {
-        return gameRepository.save(game);
+    public Page<Game> listAll(Pageable pageable) {
+        return gameRepository.findAll(pageable);
+    }
+
+    public Page<Game> search(String title, Long tagId, Pageable pageable) {
+        if (title != null && tagId != null) {
+            return gameRepository.findByTitleAndTagId(title, tagId, pageable);
+        } else if (title != null) {
+            return gameRepository.findByTitleContainingIgnoreCase(title, pageable);
+        } else if (tagId != null) {
+            return gameRepository.findByTagId(tagId, pageable);
+        } else {
+            return gameRepository.findAll(pageable);
+        }
     }
 
     public Optional<Game> findById(Long id) {
         return gameRepository.findById(id);
     }
 
-    public Page<Game> listAll(Pageable pageable) {
-        return gameRepository.findAll(pageable);
-    }
-
-    public Page<Game> search(String title, Long tagId, Pageable pageable) {
-       
-        if (title != null && !title.trim().isEmpty() && tagId != null) {
-            
-            return gameRepository.findByTitleAndTagId(title.trim(), tagId, pageable);
-        } else if (title != null && !title.trim().isEmpty()) {
-            
-            return gameRepository.findByTitleContainingIgnoreCase(title.trim(), pageable);
-        } else if (tagId != null) {
-            
-            return gameRepository.findByTagId(tagId, pageable);
-        } else {
-            
-            return gameRepository.findAll(pageable);
-        }
+    public Game save(Game game) {
+        return gameRepository.save(game);
     }
 
     public Game addTag(Long gameId, Long tagId) {

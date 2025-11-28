@@ -12,8 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/games")
@@ -25,7 +23,6 @@ public class GameController {
         this.gameService = gameService;
         this.tagService = tagService;
     }
-
     @GetMapping
     public Page<Game> getAllGames(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return gameService.listAll(PageRequest.of(page, size));
@@ -68,4 +65,6 @@ public class GameController {
     public Game removeTagFromGame(@PathVariable Long gameId, @PathVariable Long tagId) {
         return gameService.removeTag(gameId, tagId);
     }
+
+
 }

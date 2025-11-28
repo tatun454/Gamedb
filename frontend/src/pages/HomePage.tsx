@@ -41,15 +41,7 @@ const HomePage: React.FC = () => {
     return () => window.removeEventListener("focus", handleFocus);
   }, [user]);
 
-  const toggleFavorite = async (gameId: number) => {
-    if (!user) return;
-
-    try {
-      await api.post(`/user/favorites/game/${gameId}`);
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-    }
-  };
+  const toggleFavorite = async () => {};
 
   const updateGame = (updatedGame: Game) => {
     setGames((prevGames) =>

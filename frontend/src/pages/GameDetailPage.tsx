@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
 import api from "../services/api";
 import { Game } from "../types";
 
@@ -14,6 +15,7 @@ const GameDetailPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [videoError, setVideoError] = useState<string | null>(null);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -38,6 +40,25 @@ const GameDetailPage: React.FC = () => {
     fetchGame();
   }, [id]);
 
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      if (!isAuthenticated || !game) return;
+
+      try {
+        const response = await api.get("/user/favorites/games");
+        const favoriteGames = response.data;
+        const isFav = favoriteGames.some(
+          (favGame: Game) => favGame.id === game.id
+        );
+        setIsFavorite(isFav);
+      } catch (error) {
+        console.error("Error fetching favorites:", error);
+      }
+    };
+
+    fetchFavorites();
+  }, [isAuthenticated, game]);
+
   const formatReleaseDate = (dateString: string | null) => {
     if (!dateString) return null;
     const date = new Date(dateString);
@@ -52,10 +73,25 @@ const GameDetailPage: React.FC = () => {
     if (!game || !isAuthenticated) return;
 
     try {
-      await api.post(`/user/favorites/game/${game.id}`);
+      const response = await api.post(`/user/favorites/game/${game.id}`);
+
+      const wasAdded = response.data.includes("added");
+      setIsFavorite(wasAdded);
     } catch (error) {
       console.error("Error toggling favorite:", error);
     }
+  };
+
+  const isYouTubeUrl = (url: string): boolean => {
+    return url.includes("youtube.com") || url.includes("youtu.be");
+  };
+
+  const getYouTubeEmbedUrl = (url: string): string => {
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    const videoId = match && match[2].length === 11 ? match[2] : null;
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
   };
 
   const carouselSettings = {
@@ -65,8 +101,6 @@ const GameDetailPage: React.FC = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: true,
-    centerMode: true,
-    centerPadding: "0px",
   };
 
   if (loading) {
@@ -94,7 +128,7 @@ const GameDetailPage: React.FC = () => {
       </button>
 
       <div className="game-detail">
-        <div className="game-detail-header">
+        <div className="game-detail-header card">
           <h1>{game.title}</h1>
           <div className="game-detail-meta">
             {game.releaseDate && (
@@ -111,7 +145,7 @@ const GameDetailPage: React.FC = () => {
         <div className="game-detail-carousel">
           <Slider {...carouselSettings}>
             {game.imageUrl && (
-              <div>
+              <div className="slide-item">
                 <img
                   src={game.imageUrl}
                   alt={game.title}
@@ -121,11 +155,23 @@ const GameDetailPage: React.FC = () => {
               </div>
             )}
             {game.videoUrl && (
-              <div>
+              <div className="slide-item">
                 {videoError ? (
                   <div className="video-error">
                     <p>Video non disponibile: {videoError}</p>
                   </div>
+                ) : isYouTubeUrl(game.videoUrl) ? (
+                  <iframe
+                    src={getYouTubeEmbedUrl(game.videoUrl)}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="game-video-detail"
+                    onError={() =>
+                      setVideoError("Errore nel caricamento del video YouTube")
+                    }
+                  ></iframe>
                 ) : (
                   <video
                     controls
@@ -145,13 +191,13 @@ const GameDetailPage: React.FC = () => {
           </Slider>
         </div>
 
-        <div className="game-detail-description">
+        <div className="game-detail-description card">
           <h3>Description</h3>
           <p>{game.description}</p>
         </div>
 
         {game.tags && game.tags.length > 0 && (
-          <div className="game-detail-tags">
+          <div className="game-detail-tags card">
             <h3>Tags</h3>
             <div className="game-tags">
               {game.tags.map((tag) => (
@@ -171,12 +217,20 @@ const GameDetailPage: React.FC = () => {
               rel="noopener noreferrer"
               className="btn btn-primary"
             >
-              View on Steam
+              <i className="bi bi-steam"></i>
             </a>
           )}
           {isAuthenticated && (
-            <button className="btn btn-secondary" onClick={toggleFavorite}>
-              ❤️ Add to Favorites
+            <button
+              className="btn btn-secondary favorite-btn"
+              onClick={toggleFavorite}
+              title={isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+            >
+              {isFavorite ? (
+                <SuitHeartFill size={20} />
+              ) : (
+                <SuitHeart size={20} />
+              )}
             </button>
           )}
         </div>
