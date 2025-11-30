@@ -39,13 +39,14 @@ public class AdminController {
                 .map(existingGame -> {
                     existingGame.setTitle(game.getTitle());
                     existingGame.setDescription(game.getDescription());
+                    existingGame.setStory(game.getStory());
                     existingGame.setReleaseDate(game.getReleaseDate());
                     existingGame.setPrice(game.getPrice());
                     existingGame.setImageUrl(game.getImageUrl());
                     existingGame.setVideoUrl(game.getVideoUrl());
                     existingGame.setSteamLink(game.getSteamLink());
-                    existingGame.setCarouselImageUrls(game.getCarouselImageUrls());
-                    existingGame.setCarouselVideoUrls(game.getCarouselVideoUrls());
+                    existingGame.setAdditionalImageUrls(game.getAdditionalImageUrls());
+                    existingGame.setAdditionalVideoUrls(game.getAdditionalVideoUrls());
                     existingGame.getTags().clear();
                     for (Tag tag : game.getTags()) {
                         Tag managedTag = tagService.findById(tag.getId()).orElseThrow(() -> new RuntimeException("Tag not found"));

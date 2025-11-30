@@ -8,13 +8,14 @@ export interface Game {
   id: number;
   title: string;
   description: string;
+  story?: string;
   releaseDate: string;
   price?: number;
   imageUrl?: string;
   videoUrl?: string;
   steamLink?: string;
-  carouselImageUrls?: string[];
-  carouselVideoUrls?: string[];
+  additionalImageUrls?: string[];
+  additionalVideoUrls?: string[];
   tags: Tag[];
 }
 

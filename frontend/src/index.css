@@ -112,6 +112,19 @@ body {
   cursor: pointer;
 }
 
+.game-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+.game-card:active {
+  transform: scale(0.95);
+}
+
 .game-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -468,4 +481,97 @@ body {
   gap: 0.5rem;
   justify-content: flex-end;
   margin-top: 1rem;
+}
+
+.game-detail-description {
+  background-image: url("https://cdn.pixabay.com/animation/2023/03/19/02/34/02-34-11-741_512.gif");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #a259ec;
+}
+
+.game-detail-story {
+  background-image: url("https://cdn.pixabay.com/photo/2016/06/20/13/44/paper-1468883_1280.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #000000;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.collapse-btn {
+  background: none;
+
+  border: none;
+  color: #a259ec;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.collapse-btn:hover {
+  background: rgba(162, 89, 236, 0.1);
+}
+
+.metallic-bg {
+  background: #23272a;
+  position: relative;
+  overflow: hidden;
+  color: #a259ec;
+}
+
+.metallic-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(214, 214, 214, 0.3),
+    rgba(81, 80, 80, 0.3),
+    rgba(50, 50, 50, 0.3)
+  );
+  transform: rotate(-45deg);
+  animation: lightSweep 5s infinite;
+}
+
+@keyframes lightSweep {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.arrow-container {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+}
+
+.arrow-container.arrow-down .bi {
+  background: #e94560;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.arrow-container.arrow-up .bi {
+  background: #a259ec;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

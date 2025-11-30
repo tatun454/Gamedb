@@ -27,6 +27,9 @@ public class Game {
     @Column(columnDefinition = "text")
     private String description;
 
+    @Column(columnDefinition = "text")
+    private String story;
+
     private LocalDate releaseDate;
 
     private BigDecimal price;
@@ -38,14 +41,14 @@ public class Game {
     private String steamLink;
 
     @ElementCollection
-    @CollectionTable(name = "game_carousel_images", joinColumns = @JoinColumn(name = "game_id"))
+    @CollectionTable(name = "game_additional_images", joinColumns = @JoinColumn(name = "game_id"))
     @Column(name = "image_url")
-    private List<String> carouselImageUrls = new java.util.ArrayList<>();
+    private List<String> additionalImageUrls = new java.util.ArrayList<>();
 
     @ElementCollection
-    @CollectionTable(name = "game_carousel_videos", joinColumns = @JoinColumn(name = "game_id"))
+    @CollectionTable(name = "game_additional_videos", joinColumns = @JoinColumn(name = "game_id"))
     @Column(name = "video_url")
-    private List<String> carouselVideoUrls = new java.util.ArrayList<>();
+    private List<String> additionalVideoUrls = new java.util.ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "game_tags",

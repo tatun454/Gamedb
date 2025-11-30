@@ -8,13 +8,14 @@ const AdminDashboard: React.FC = () => {
   const [newGame, setNewGame] = useState({
     title: "",
     description: "",
+    story: "",
     releaseDate: "",
     price: "",
     imageUrl: "",
     videoUrl: "",
     steamLink: "",
-    carouselImageUrls: [] as string[],
-    carouselVideoUrls: [] as string[],
+    additionalImageUrls: [] as string[],
+    additionalVideoUrls: [] as string[],
     tags: [] as Tag[],
   });
   const [newTagName, setNewTagName] = useState("");
@@ -22,13 +23,14 @@ const AdminDashboard: React.FC = () => {
   const [editGame, setEditGame] = useState({
     title: "",
     description: "",
+    story: "",
     releaseDate: "",
     price: "",
     imageUrl: "",
     videoUrl: "",
     steamLink: "",
-    imageUrls: [] as string[],
-    videoUrls: [] as string[],
+    additionalImageUrls: [] as string[],
+    additionalVideoUrls: [] as string[],
   });
   const [editTagInput, setEditTagInput] = useState("");
   const [editTagSuggestions, setEditTagSuggestions] = useState<Tag[]>([]);
@@ -64,13 +66,14 @@ const AdminDashboard: React.FC = () => {
       setNewGame({
         title: "",
         description: "",
+        story: "",
         releaseDate: "",
         price: "",
         imageUrl: "",
         videoUrl: "",
         steamLink: "",
-        carouselImageUrls: [],
-        carouselVideoUrls: [],
+        additionalImageUrls: [],
+        additionalVideoUrls: [],
         tags: [],
       });
       fetchData();
@@ -100,13 +103,14 @@ const AdminDashboard: React.FC = () => {
     setEditGame({
       title: game.title,
       description: game.description || "",
+      story: game.story || "",
       releaseDate: game.releaseDate || "",
       price: game.price?.toString() || "",
       imageUrl: game.imageUrl || "",
       videoUrl: game.videoUrl || "",
       steamLink: game.steamLink || "",
-      imageUrls: game.carouselImageUrls || [],
-      videoUrls: game.carouselVideoUrls || [],
+      additionalImageUrls: game.additionalImageUrls || [],
+      additionalVideoUrls: game.additionalVideoUrls || [],
     });
     setEditGameTags(game.tags || []);
   };
@@ -131,13 +135,14 @@ const AdminDashboard: React.FC = () => {
       setEditGame({
         title: "",
         description: "",
+        story: "",
         releaseDate: "",
         price: "",
         imageUrl: "",
         videoUrl: "",
         steamLink: "",
-        imageUrls: [],
-        videoUrls: [],
+        additionalImageUrls: [],
+        additionalVideoUrls: [],
       });
       setEditGameTags([]);
       fetchData();
@@ -151,13 +156,14 @@ const AdminDashboard: React.FC = () => {
     setEditGame({
       title: "",
       description: "",
+      story: "",
       releaseDate: "",
       price: "",
       imageUrl: "",
       videoUrl: "",
       steamLink: "",
-      imageUrls: [],
-      videoUrls: [],
+      additionalImageUrls: [],
+      additionalVideoUrls: [],
     });
     setEditGameTags([]);
     setEditTagInput("");
@@ -255,6 +261,16 @@ const AdminDashboard: React.FC = () => {
               />
             </div>
             <div className="form-group">
+              <label>Story</label>
+              <textarea
+                value={newGame.story}
+                onChange={(e) =>
+                  setNewGame({ ...newGame, story: e.target.value })
+                }
+                rows={5}
+              />
+            </div>
+            <div className="form-group">
               <label>Release Date</label>
               <input
                 type="date"
@@ -300,15 +316,15 @@ const AdminDashboard: React.FC = () => {
 
             <div className="form-group">
               <label>Additional Image URLs</label>
-              {newGame.carouselImageUrls.map((url, index) => (
+              {newGame.additionalImageUrls.map((url, index) => (
                 <div key={index} className="additional-url">
                   <input
                     type="url"
                     value={url}
                     onChange={(e) => {
-                      const newUrls = [...newGame.carouselImageUrls];
+                      const newUrls = [...newGame.additionalImageUrls];
                       newUrls[index] = e.target.value;
-                      setNewGame({ ...newGame, carouselImageUrls: newUrls });
+                      setNewGame({ ...newGame, additionalImageUrls: newUrls });
                     }}
                     placeholder="https://example.com/image.jpg"
                   />
@@ -316,10 +332,10 @@ const AdminDashboard: React.FC = () => {
                     type="button"
                     className="btn btn-danger btn-small"
                     onClick={() => {
-                      const newUrls = newGame.carouselImageUrls.filter(
+                      const newUrls = newGame.additionalImageUrls.filter(
                         (_, i) => i !== index
                       );
-                      setNewGame({ ...newGame, carouselImageUrls: newUrls });
+                      setNewGame({ ...newGame, additionalImageUrls: newUrls });
                     }}
                   >
                     Remove
@@ -332,7 +348,7 @@ const AdminDashboard: React.FC = () => {
                 onClick={() =>
                   setNewGame({
                     ...newGame,
-                    carouselImageUrls: [...newGame.carouselImageUrls, ""],
+                    additionalImageUrls: [...newGame.additionalImageUrls, ""],
                   })
                 }
               >
@@ -342,15 +358,15 @@ const AdminDashboard: React.FC = () => {
 
             <div className="form-group">
               <label>Additional Video URLs</label>
-              {newGame.carouselVideoUrls.map((url, index) => (
+              {newGame.additionalVideoUrls.map((url, index) => (
                 <div key={index} className="additional-url">
                   <input
                     type="url"
                     value={url}
                     onChange={(e) => {
-                      const newUrls = [...newGame.carouselVideoUrls];
+                      const newUrls = [...newGame.additionalVideoUrls];
                       newUrls[index] = e.target.value;
-                      setNewGame({ ...newGame, carouselVideoUrls: newUrls });
+                      setNewGame({ ...newGame, additionalVideoUrls: newUrls });
                     }}
                     placeholder="https://example.com/video.mp4"
                   />
@@ -358,10 +374,10 @@ const AdminDashboard: React.FC = () => {
                     type="button"
                     className="btn btn-danger btn-small"
                     onClick={() => {
-                      const newUrls = newGame.carouselVideoUrls.filter(
+                      const newUrls = newGame.additionalVideoUrls.filter(
                         (_, i) => i !== index
                       );
-                      setNewGame({ ...newGame, carouselVideoUrls: newUrls });
+                      setNewGame({ ...newGame, additionalVideoUrls: newUrls });
                     }}
                   >
                     Remove
@@ -374,7 +390,7 @@ const AdminDashboard: React.FC = () => {
                 onClick={() =>
                   setNewGame({
                     ...newGame,
-                    carouselVideoUrls: [...newGame.carouselVideoUrls, ""],
+                    additionalVideoUrls: [...newGame.additionalVideoUrls, ""],
                   })
                 }
               >
@@ -465,6 +481,16 @@ const AdminDashboard: React.FC = () => {
                 />
               </div>
               <div className="form-group">
+                <label>Story</label>
+                <textarea
+                  value={editGame.story}
+                  onChange={(e) =>
+                    setEditGame({ ...editGame, story: e.target.value })
+                  }
+                  rows={5}
+                />
+              </div>
+              <div className="form-group">
                 <label>Release Date</label>
                 <input
                   type="date"
@@ -510,17 +536,17 @@ const AdminDashboard: React.FC = () => {
 
               <div className="form-group">
                 <label>Additional Image URLs</label>
-                {editGame.imageUrls.map((url, index) => (
+                {editGame.additionalImageUrls.map((url, index) => (
                   <div key={index} className="additional-url">
                     <input
                       type="url"
                       value={url}
                       onChange={(e) => {
-                        const newUrls = [...editGame.imageUrls];
+                        const newUrls = [...editGame.additionalImageUrls];
                         newUrls[index] = e.target.value;
                         setEditGame({
                           ...editGame,
-                          imageUrls: newUrls,
+                          additionalImageUrls: newUrls,
                         });
                       }}
                       placeholder="https://example.com/image.jpg"
@@ -529,12 +555,12 @@ const AdminDashboard: React.FC = () => {
                       type="button"
                       className="btn btn-danger btn-small"
                       onClick={() => {
-                        const newUrls = editGame.imageUrls.filter(
+                        const newUrls = editGame.additionalImageUrls.filter(
                           (_, i) => i !== index
                         );
                         setEditGame({
                           ...editGame,
-                          imageUrls: newUrls,
+                          additionalImageUrls: newUrls,
                         });
                       }}
                     >
@@ -548,7 +574,10 @@ const AdminDashboard: React.FC = () => {
                   onClick={() =>
                     setEditGame({
                       ...editGame,
-                      imageUrls: [...editGame.imageUrls, ""],
+                      additionalImageUrls: [
+                        ...editGame.additionalImageUrls,
+                        "",
+                      ],
                     })
                   }
                 >
@@ -558,17 +587,17 @@ const AdminDashboard: React.FC = () => {
 
               <div className="form-group">
                 <label>Additional Video URLs</label>
-                {editGame.videoUrls.map((url, index) => (
+                {editGame.additionalVideoUrls.map((url, index) => (
                   <div key={index} className="additional-url">
                     <input
                       type="url"
                       value={url}
                       onChange={(e) => {
-                        const newUrls = [...editGame.videoUrls];
+                        const newUrls = [...editGame.additionalVideoUrls];
                         newUrls[index] = e.target.value;
                         setEditGame({
                           ...editGame,
-                          videoUrls: newUrls,
+                          additionalVideoUrls: newUrls,
                         });
                       }}
                       placeholder="https://example.com/video.mp4"
@@ -577,12 +606,12 @@ const AdminDashboard: React.FC = () => {
                       type="button"
                       className="btn btn-danger btn-small"
                       onClick={() => {
-                        const newUrls = editGame.videoUrls.filter(
+                        const newUrls = editGame.additionalVideoUrls.filter(
                           (_, i) => i !== index
                         );
                         setEditGame({
                           ...editGame,
-                          videoUrls: newUrls,
+                          additionalVideoUrls: newUrls,
                         });
                       }}
                     >
@@ -596,7 +625,10 @@ const AdminDashboard: React.FC = () => {
                   onClick={() =>
                     setEditGame({
                       ...editGame,
-                      videoUrls: [...editGame.videoUrls, ""],
+                      additionalVideoUrls: [
+                        ...editGame.additionalVideoUrls,
+                        "",
+                      ],
                     })
                   }
                 >

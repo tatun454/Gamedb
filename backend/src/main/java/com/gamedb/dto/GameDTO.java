@@ -16,12 +16,13 @@ public class GameDTO {
     private Long id;
     private String title;
     private String description;
+    private String story;
     private LocalDate releaseDate;
     private BigDecimal price;
     private String imageUrl;
     private String videoUrl;
     private String steamLink;
-    private List<String> carouselImageUrls;
-    private List<String> carouselVideoUrls;
+    private List<String> additionalImageUrls;
+    private List<String> additionalVideoUrls;
     private Set<TagDTO> tags;
 }

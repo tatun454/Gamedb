@@ -16,6 +16,8 @@ const GameDetailPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [videoError, setVideoError] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isDescriptionCollapsed, setIsDescriptionCollapsed] = useState(false);
+  const [isStoryCollapsed, setIsStoryCollapsed] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -128,7 +130,7 @@ const GameDetailPage: React.FC = () => {
       </button>
 
       <div className="game-detail">
-        <div className="game-detail-header card">
+        <div className="game-detail-header card metallic-bg">
           <h1>{game.title}</h1>
           <div className="game-detail-meta">
             {game.releaseDate && (
@@ -154,6 +156,17 @@ const GameDetailPage: React.FC = () => {
                 />
               </div>
             )}
+            {game.additionalImageUrls &&
+              game.additionalImageUrls.map((url, index) => (
+                <div key={`additional-image-${index}`} className="slide-item">
+                  <img
+                    src={url}
+                    alt={`${game.title} - Additional ${index + 1}`}
+                    className="game-detail-image"
+                    crossOrigin="anonymous"
+                  />
+                </div>
+              ))}
             {game.videoUrl && (
               <div className="slide-item">
                 {videoError ? (
@@ -188,13 +201,90 @@ const GameDetailPage: React.FC = () => {
                 )}
               </div>
             )}
+            {game.additionalVideoUrls &&
+              game.additionalVideoUrls.map((url, index) => (
+                <div key={`additional-video-${index}`} className="slide-item">
+                  {isYouTubeUrl(url) ? (
+                    <iframe
+                      src={getYouTubeEmbedUrl(url)}
+                      title={`YouTube video player - Additional ${index + 1}`}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="game-video-detail"
+                    ></iframe>
+                  ) : (
+                    <video
+                      controls
+                      preload="metadata"
+                      className="game-video-detail"
+                      crossOrigin="anonymous"
+                    >
+                      <source src={url} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  )}
+                </div>
+              ))}
           </Slider>
         </div>
 
-        <div className="game-detail-description card">
-          <h3>Description</h3>
-          <p>{game.description}</p>
+        <div
+          className="game-detail-description card"
+          style={{ marginTop: "2rem" }}
+        >
+          <div className="card-header">
+            <h3>Description</h3>
+            <button
+              className="collapse-btn"
+              onClick={() => setIsDescriptionCollapsed(!isDescriptionCollapsed)}
+              title={isDescriptionCollapsed ? "Expand" : "Collapse"}
+            >
+              <div
+                className={`arrow-container ${
+                  isDescriptionCollapsed ? "arrow-down" : "arrow-up"
+                }`}
+              >
+                <i
+                  className={`bi ${
+                    isDescriptionCollapsed
+                      ? "bi-caret-down-fill"
+                      : "bi-caret-up-fill"
+                  }`}
+                ></i>
+              </div>
+            </button>
+          </div>
+          {!isDescriptionCollapsed && <p>{game.description}</p>}
         </div>
+
+        {game.story && (
+          <div className="game-detail-story card">
+            <div className="card-header">
+              <h3>Story</h3>
+              <button
+                className="collapse-btn"
+                onClick={() => setIsStoryCollapsed(!isStoryCollapsed)}
+                title={isStoryCollapsed ? "Expand" : "Collapse"}
+              >
+                <div
+                  className={`arrow-container ${
+                    isStoryCollapsed ? "arrow-down" : "arrow-up"
+                  }`}
+                >
+                  <i
+                    className={`bi ${
+                      isStoryCollapsed
+                        ? "bi-caret-down-fill"
+                        : "bi-caret-up-fill"
+                    }`}
+                  ></i>
+                </div>
+              </button>
+            </div>
+            {!isStoryCollapsed && <p>{game.story}</p>}
+          </div>
+        )}
 
         {game.tags && game.tags.length > 0 && (
           <div className="game-detail-tags card">
