@@ -86,20 +86,20 @@ const GameCard: React.FC<GameCardProps> = ({
   };
 
   return (
-    <div
-      className="card game-card"
-      onClick={() => navigate(`/game/${game.id}`)}
-    >
+    <div className="card game-card">
       {game.imageUrl && (
         <img
           src={game.imageUrl}
           alt={game.title}
           className="game-image"
           crossOrigin="anonymous"
+          onClick={() => navigate(`/game/${game.id}`)}
         />
       )}
       <div className="card-content">
-        <h3 className="game-title">{game.title}</h3>
+        <h3 className="game-title" onClick={() => navigate(`/game/${game.id}`)}>
+          {game.title}
+        </h3>
         <div className="game-meta">
           {game.releaseDate && (
             <span className="game-release">
@@ -129,10 +129,7 @@ const GameCard: React.FC<GameCardProps> = ({
           </div>
         )}
 
-        <div
-          className="d-flex"
-          style={{ gap: "2rem", justifyContent: "space-between" }}
-        >
+        <div className="d-flex">
           {game.steamLink && (
             <a
               href={game.steamLink}
