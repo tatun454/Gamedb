@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
     Optional<Tag> findByName(String name);
-    List<Tag> findByNameStartingWith(String prefix);
+    List<Tag> findByNameStartingWithIgnoreCase(String prefix);
 }

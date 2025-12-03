@@ -364,12 +364,13 @@ body {
 }
 
 .tag-suggestions {
+  position: absolute;
+
   max-height: 150px;
   overflow-y: auto;
   border: 1px solid #444950;
   border-radius: 4px;
   background: #23272a;
-  margin-top: 0.5rem;
 }
 
 .tag-suggestion-btn {
@@ -498,6 +499,10 @@ body {
   color: #a259ec;
 }
 
+.game-detail-description p {
+  white-space: pre-wrap;
+}
+
 .game-detail-story {
   background-image: url("https://cdn.pixabay.com/photo/2016/06/20/13/44/paper-1468883_1280.jpg");
   background-size: cover;
@@ -506,6 +511,10 @@ body {
   color: #000000;
   overflow-wrap: break-word;
   word-wrap: break-word;
+}
+
+.game-detail-story p {
+  white-space: pre-wrap;
 }
 
 .card-header {
@@ -581,4 +590,38 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.games-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  padding: 0.5rem;
+  border: 1px solid #444950;
+  border-radius: 4px;
+  background: #23272a;
+  color: #eaeaea;
+  width: 300px;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #a259ec;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.pagination-info {
+  color: #eaeaea;
+  font-size: 0.9rem;
 }

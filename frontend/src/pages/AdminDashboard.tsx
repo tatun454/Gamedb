@@ -39,19 +39,42 @@ const AdminDashboard: React.FC = () => {
   const [tagInput, setTagInput] = useState("");
   const [tagSuggestions, setTagSuggestions] = useState<Tag[]>([]);
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
-    fetchData();
+    fetchTags();
   }, []);
 
-  const fetchData = async () => {
+  useEffect(() => {
+    fetchGames();
+  }, [currentPage, searchQuery]);
+
+  const fetchGames = async () => {
     try {
-      const [gamesResponse, tagsResponse] = await Promise.all([
-        api.get("/games"),
-        api.get("/admin/tags"),
-      ]);
+      const params = new URLSearchParams();
+      params.append("page", currentPage.toString());
+      params.append("size", "30");
+      if (searchQuery) {
+        params.append("title", searchQuery);
+      }
+      const endpoint = searchQuery ? "/games/search" : "/games";
+      const gamesResponse = await api.get(`${endpoint}?${params}`);
       setGames(gamesResponse.data.content || []);
+      setTotalPages(gamesResponse.data.totalPages || 0);
+    } catch (error) {}
+  };
+
+  const fetchTags = async () => {
+    try {
+      const tagsResponse = await api.get("/admin/tags");
       setTags(tagsResponse.data || []);
     } catch (error) {}
+  };
+
+  const fetchData = async () => {
+    await Promise.all([fetchGames(), fetchTags()]);
   };
 
   const createGame = async (e: React.FormEvent) => {
@@ -740,7 +763,19 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       <section className="section-spacing">
-        <h2>All Games</h2>
+        <div className="games-header">
+          <h2>All Games</h2>
+          <input
+            type="text"
+            placeholder="Search games by title..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(0); // Reset to first page when searching
+            }}
+            className="search-input"
+          />
+        </div>
         <div className="games-list-compact">
           {games.map((game) => (
             <div key={game.id} className="game-card-compact">
@@ -780,6 +815,27 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+        <div className="pagination">
+          <button
+            className="btn btn-secondary"
+            onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
+            disabled={currentPage === 0}
+          >
+            Previous
+          </button>
+          <span className="pagination-info">
+            Page {currentPage + 1} of {totalPages}
+          </span>
+          <button
+            className="btn btn-secondary"
+            onClick={() =>
+              setCurrentPage(Math.min(totalPages - 1, currentPage + 1))
+            }
+            disabled={currentPage >= totalPages - 1}
+          >
+            Next
+          </button>
         </div>
       </section>
     </div>

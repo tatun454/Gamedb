@@ -82,6 +82,9 @@ const SearchPage: React.FC = () => {
             id="searchTitle"
             value={searchTitle}
             onChange={(e) => setSearchTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") search();
+            }}
             placeholder="Enter game title..."
           />
         </div>

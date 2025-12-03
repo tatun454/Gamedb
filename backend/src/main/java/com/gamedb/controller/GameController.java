@@ -24,7 +24,7 @@ public class GameController {
         this.tagService = tagService;
     }
     @GetMapping
-    public Page<Game> getAllGames(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public Page<Game> getAllGames(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "30") int size) {
         return gameService.listAll(PageRequest.of(page, size));
     }
 

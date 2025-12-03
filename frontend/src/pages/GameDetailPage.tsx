@@ -261,7 +261,7 @@ const GameDetailPage: React.FC = () => {
         {game.story && (
           <div className="game-detail-story card">
             <div className="card-header">
-              <h3>Story</h3>
+              <h3>Story about the project</h3>
               <button
                 className="collapse-btn"
                 onClick={() => setIsStoryCollapsed(!isStoryCollapsed)}

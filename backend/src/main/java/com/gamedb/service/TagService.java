@@ -28,7 +28,7 @@ public class TagService {
     }
 
     public List<Tag> findByNameStartingWith(String prefix) {
-        return tagRepository.findByNameStartingWith(prefix);
+        return tagRepository.findByNameStartingWithIgnoreCase(prefix);
     }
 
     public void deleteById(Long id) {
